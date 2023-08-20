@@ -1,0 +1,21 @@
+{% extends 'referral_app/main.html' %}
+
+{% block title %}
+DRF Referral app - Вход
+{% endblock %}
+
+{% block content %}
+    <div class="container p-4 border mt-sm-5" style="max-width: 450px">
+        <h1 class="display-6 text-center pb-4">Referral app</h1>
+        <form action="{% url 'referral_app:login' %}?sms_confirmation=1" method="post" class="row g-3">
+            {% csrf_token %}
+            <div class="col-12">
+                <label for="input-code" class="form-label">Код из смс. (0000)</label>
+                <input type="text" class="form-control" id="input-code" name="sms_code">
+            </div>
+            <div class="col-12 mt-4 text-center ">
+                <button type="submit" class="btn btn-primary btn-lg px-4 w-100 ">Подтвердить</button>
+            </div>
+        </form>
+    </div>
+{% endblock %}
