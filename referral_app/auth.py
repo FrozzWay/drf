@@ -3,6 +3,7 @@ from jose import JWTError
 from jose import jwt
 from rest_framework.request import Request
 
+from .exceptions import HttpException
 from .models import User
 from rest_framework import authentication
 from rest_framework import exceptions
@@ -33,4 +34,4 @@ class UserAuthentication(authentication.BaseAuthentication):
 
 class PrivilegeAccessPermission(BasePermission):
     def has_permission(self, request, view):
-        return bool(request.user and request.user.is_privileged)
+        return bool(request.user.is_authenticated and request.user.is_privileged)
