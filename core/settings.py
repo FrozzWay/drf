@@ -20,14 +20,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'jo0dGojTKbovWlfpJ7lTEjx5Ituz8oY1oBpdmM-exdC6f3QCYBiuBf8khaz9NnnMo0C7OEjxA0UtPH3l7D9fIQ'
-JWE_SECRET = '95ed69cfc7191c51f70830a477b3d067c1f56ca54d1974fa0dfd6fbc923d50f2'
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', '')
+JWE_SECRET = os.getenv('DJANGO_JWE_SECRET', '')
 SESSION_COOKIE_AGE = 1209600
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', "*").split(" ")
 
 REST_FRAMEWORK = {
     'EXCEPTION_HANDLER': 'rest_framework.views.exception_handler'
@@ -133,3 +131,9 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+if os.getenv('ENVIRONMENT', '') == 'DEV':
+    DEBUG = True
+    SECRET_KEY = 'jo0dGojTKbovWlfpJ7lTEjx5Ituz8oY1oBpdmM-exdC6f3QCYBiuBf8khaz9NnnMo0C7OEjxA0UtPH3l7D9fIQ'
+    JWE_SECRET = '95ed69cfc7191c51f70830a477b3d067c1f56ca54d1974fa0dfd6fbc923d50f2'
