@@ -3,6 +3,7 @@ from datetime import datetime
 from datetime import timedelta
 
 import jose.exceptions
+from django.db.models import RestrictedError
 from jose import jwt, jwe
 
 from django.shortcuts import redirect, render
@@ -124,6 +125,7 @@ class ProfileView(mixins.RetrieveModelMixin, generics.GenericAPIView):
     authentication_classes = [UserAuthentication]
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    permission_exception = HttpException('You don\'t have permission for that', status.HTTP_403_FORBIDDEN)
 
     def get(self, request, pk=None):
         if pk is None:
@@ -131,9 +133,18 @@ class ProfileView(mixins.RetrieveModelMixin, generics.GenericAPIView):
             return self.retrieve(request)
 
         if not (request.user.is_privileged or request.user.id == pk):
-            raise HttpException('You don\'t have permission for that', status.HTTP_403_FORBIDDEN)
+            raise self.permission_exception
 
         return self.retrieve(request)
+
+    def delete(self, request, pk):
+        if not request.user.is_privileged or pk is None:
+            raise self.permission_exception
+        try:
+            User.objects.get(pk=pk).delete()
+        except RestrictedError:
+            return Response(status=status.HTTP_409_CONFLICT)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class ListProfileView(generics.ListAPIView):
@@ -141,6 +152,10 @@ class ListProfileView(generics.ListAPIView):
     permission_classes = [PrivilegeAccessPermission]
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+    def delete(self, request):
+        User.objects.all().delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class SetInvitationView(APIView):

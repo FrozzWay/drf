@@ -6,7 +6,7 @@ class User(models.Model):
     name = models.CharField(max_length=32, verbose_name="Имя", blank=True, null=True)
     phone = models.CharField(max_length=32, verbose_name="Номер телефона", unique=True)
     invitation_code = models.CharField(max_length=6)
-    invited_by = models.ForeignKey('self', on_delete=models.CASCADE, null=True)
+    invited_by = models.ForeignKey('self', on_delete=models.RESTRICT, null=True)
 
     is_privileged = models.BooleanField(verbose_name="Привилегированный доступ", default=False)
 
