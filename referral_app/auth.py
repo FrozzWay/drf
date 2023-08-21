@@ -34,4 +34,4 @@ class UserAuthentication(authentication.BaseAuthentication):
 
 class PrivilegeAccessPermission(BasePermission):
     def has_permission(self, request, view):
-        return bool(request.user.is_authenticated and request.user.is_privileged)
+        return bool(request.user and request.user.is_privileged)
