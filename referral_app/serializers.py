@@ -27,7 +27,7 @@ class UserSerializer(s.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'name', 'phone', 'invitation_code', 'invited_by', 'invited_users_phones')
+        fields = ('id', 'name', 'phone', 'is_privileged', 'invitation_code', 'invited_by', 'invited_users_phones')
 
     def get_invited_users_phones(self, obj: User):
         return obj.invited_users.values_list('phone', flat=True)
